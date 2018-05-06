@@ -1,13 +1,13 @@
 package game.hw.wolfk;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import game.hw.trans.TcpClient;
 import game.hw.trans.TcpServer;
-import game.hw.trans.UdpClient;
-import game.hw.trans.UdpServer;
+import game.hw.wolfk.data.Person;
 
 public class MainActivity extends AppCompatActivity {
     int mTCPPort = 9998;
@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TcpServer mTcpServer;
     private TcpClient mTcpClient;
-    private UdpServer mUdpServer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,9 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         mTcpServer = new TcpServer(mTCPPort);
         mTcpServer.startServer();
-
-        mUdpServer = new UdpServer(mUdpPort);
-        mUdpServer.startServer();
 
         mTcpClient = new TcpClient("127.0.0.1", mTCPPort);
         mTcpClient.init();
@@ -43,10 +39,13 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.btn_tcp_send:
-                    mTcpClient.sendData("Test for tcp!!!");
+                    Person p = new Person();
+                    p.avatar = BitmapFactory.decodeResource(getResources(), R.drawable.timg);
+                    p.name = "测试传输协议";
+                    mTcpClient.sendData(p);
                     break;
                 case R.id.btn_udp_send:
-                    UdpClient.sendData("127.0.0.1", mUdpPort, "Test for udp!!!");
+                    // dpClient.sendData("127.0.0.1", mUdpPort, "Test for udp!!!");
                     break;
             }
         }

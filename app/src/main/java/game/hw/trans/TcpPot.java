@@ -4,7 +4,11 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+
+import game.hw.wolfk.data.Person;
 
 public class TcpPot {
     private static final String TAG = "HWGAME:TcpPot";
@@ -36,16 +40,41 @@ public class TcpPot {
                 Log.e(TAG, "DataTransThread socket null");
                 return;
             }
+
             InputStream in = null;
             try {
                 in = mSocket.getInputStream();
-                byte[] buf = new byte[1024];
-                int cntRead;
-                while ((cntRead = in.read(buf)) > 0) {
-                    Log.e(TAG, "cntRead = " + cntRead);
-                    Log.e(TAG, "received: " + new String(buf, 0, cntRead));
+                while (mIsContinue) {
+                    String className = StreamUtils.readString(in);
+                    if (className == null) {
+                        Log.e(TAG, "its null");
+                    }
+                    Log.e(TAG, "className = " + className);
+                    Class clazz = Class.forName(className);
+                    Constructor<Transable> constructor = clazz.getConstructor();
+                    Transable transable = constructor.newInstance();
+                    transable.onReadData(in);
+
+                    // TODO hanwei just for debug, remove these below
+                    if (transable instanceof Person) {
+                        Log.e(TAG, "person.name = " + ((Person) transable).name);
+                        Log.e(TAG, "person.avatar = " + ((Person) transable).avatar);
+                        if (((Person) transable).avatar != null) {
+                            Log.e(TAG, "asd: " + ((Person) transable).avatar.getByteCount());
+                        }
+                    }
                 }
             } catch (IOException e) {
+                Log.e(TAG, e.toString(), e);
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, e.toString(), e);
+            } catch (NoSuchMethodException e) {
+                Log.e(TAG, e.toString(), e);
+            } catch (IllegalAccessException e) {
+                Log.e(TAG, e.toString(), e);
+            } catch (InstantiationException e) {
+                Log.e(TAG, e.toString(), e);
+            } catch (InvocationTargetException e) {
                 Log.e(TAG, e.toString(), e);
             } finally {
                 if (in != null) {

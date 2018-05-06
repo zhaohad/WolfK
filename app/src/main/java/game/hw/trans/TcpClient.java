@@ -40,7 +40,7 @@ public class TcpClient {
         }.start();
     }
 
-    public void sendData(final Object o) {
+    public void sendData(final Transable transable) {
         new Thread() {
             @Override
             public void run() {
@@ -52,7 +52,9 @@ public class TcpClient {
                 OutputStream os = mOutputStream;
                 if (os != null) {
                     try {
-                        os.write(((String) o).getBytes());
+                        String className = transable.getClassName();
+                        StreamUtils.writeString(os, className);
+                        transable.onWriteData(os);
                         os.flush();
                     } catch (IOException e) {
                         Log.e(TAG, e.toString(), e);
