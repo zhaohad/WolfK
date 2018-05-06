@@ -4,10 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Person implements Serializable {
@@ -50,15 +46,5 @@ public class Person implements Serializable {
     public static Bitmap getBitmap(byte[] bitmapdata) {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
         return bitmap;
-    }
-
-    public void save(File file, Person person) {
-        try {
-            ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(file));
-            oout.writeObject(person);
-            oout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
