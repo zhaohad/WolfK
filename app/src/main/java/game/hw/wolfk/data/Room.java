@@ -1,25 +1,18 @@
 package game.hw.wolfk.data;
 
-import android.graphics.Bitmap;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import game.hw.trans.BaseData;
 
-public class Person extends BaseData {
-    public Bitmap avatar;
-    public String name;
-
+public class Room extends BaseData {
     @Override
     public void onWriteData(OutputStream os) {
-        writeBitmap(os, avatar);
-        writeString(os, name);
+
     }
 
     @Override
     public void onReadData(InputStream is) {
-        avatar = readBitmap(is);
-        name = readString(is);
+
     }
 }
